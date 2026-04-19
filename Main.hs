@@ -161,26 +161,28 @@ announceGameOver board = do
       GT -> "Winner: " ++ showPlayer Player1
       LT -> "Winner: " ++ showPlayer Player2
       EQ -> "Result: Draw"
+  putStrLn ""
+  putStr "Press Enter to exit..."
+  _ <- getLine
+  pure ()
 
 printBoard :: Board -> IO ()
 printBoard board = do
   let topValues = reverse (player2Holes board)
       bottomValues = player1Holes board
-      topLabels = reverse [1 .. 6 :: Int]
-      bottomLabels = [1 .. 6 :: Int]
-      topRow = formatRow topLabels topValues
-      bottomRow = formatRow bottomLabels bottomValues
-      gap = replicate (length topRow - 18) ' '
-  putStrLn "              Player 2 (top)"
+      topRow = formatRow topValues
+      bottomRow = formatRow bottomValues
+      gap = replicate (length topRow) ' '
+  putStrLn "              Player 2"
   putStrLn $ "      " ++ topRow
-  putStrLn $ printf "  P2 Store [%2d]%sP1 Store [%2d]" (player2Store board) gap (player1Store board)
+  putStrLn $ printf "  [%2d]%s [%2d]" (player2Store board) gap (player1Store board)
   putStrLn $ "      " ++ bottomRow
-  putStrLn "              Player 1 (bottom)"
+  putStrLn "              Player 1"
 
-formatRow :: [Int] -> [Int] -> String
-formatRow labels values =
+formatRow :: [Int] -> String
+formatRow values =
   intercalate " " $
-    zipWith (\lbl val -> printf "[%d:%2d]" lbl val) labels values
+    map (printf "[%2d]") values
 
 otherPlayer :: Player -> Player
 otherPlayer Player1 = Player2
